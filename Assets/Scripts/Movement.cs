@@ -17,10 +17,10 @@ public class Movement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        location1 = new Vector3(-4.57f, 8.44f, -1.0f);
-        location2 = new Vector3(0.42f, 8.44f, -1.0f);
-        location3 = new Vector3(0.42f, 1.42f, -1.0f);
-        location4 = new Vector3(-4.57f, 1.42f, -1.0f);
+        location4 = new Vector3(-4.57f, 8.44f, -1.0f);
+        location1 = new Vector3(0.42f, 8.44f, -1.0f);
+        location2 = new Vector3(0.42f, 4.43f, -1.0f);
+        location3 = new Vector3(-4.57f, 4.43f, -1.0f);
         //pacStud = new GameObject();
         tweener = GameObject.FindFirstObjectByType<Tweener>();
 
@@ -32,25 +32,25 @@ public class Movement : MonoBehaviour
         if (pacStud.transform.position == location1)
         {
             pacAnim.SetInteger("Param", 0);
-            tweener.AddTween(pacStud.transform, pacStud.transform.position, location2, 0.5f);
+            tweener.AddTween(pacStud.transform, pacStud.transform.position, location2, 0.9f);
         }
 
         if (pacStud.transform.position == location2)
         {
             pacAnim.SetInteger("Param", 1);
-            tweener.AddTween(pacStud.transform, pacStud.transform.position, location3, 0.5f);
+            tweener.AddTween(pacStud.transform, pacStud.transform.position, location3, 0.9f);
         }
 
         if (pacStud.transform.position == location3)
         {
             pacAnim.SetInteger("Param", 2);
-            tweener.AddTween(pacStud.transform, pacStud.transform.position, location4, 0.5f);
+            tweener.AddTween(pacStud.transform, pacStud.transform.position, location4, 0.9f);
         }
 
 
         if (pacStud.transform.position == location4)
         {
-            tweener.AddTween(pacStud.transform, pacStud.transform.position, location1, 0.5f);
+            tweener.AddTween(pacStud.transform, pacStud.transform.position, location1, 0.9f);
             pacAnim.SetInteger("Param", 3);
         } 
             
