@@ -12,7 +12,7 @@ public class Movement : MonoBehaviour
     private Vector3 location2;
     private Vector3 location3;
     private Vector3 location4;
-    private float counter;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +21,6 @@ public class Movement : MonoBehaviour
         location1 = new Vector3(0.42f, 8.44f, -1.0f);
         location2 = new Vector3(0.42f, 4.43f, -1.0f);
         location3 = new Vector3(-4.57f, 4.43f, -1.0f);
-        //pacStud = new GameObject();
         tweener = GameObject.FindFirstObjectByType<Tweener>();
 
     }
