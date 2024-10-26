@@ -25,7 +25,7 @@ public class UIManager : MonoBehaviour
         
         DontDestroyOnLoad(this.gameObject);
         SceneManager.LoadScene(1);
-        //SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
         //ShowLoadingScreen();
         //StartCoroutine(LoadSceneAsync(1));
         
@@ -38,17 +38,17 @@ public class UIManager : MonoBehaviour
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         
-        //if (scene == SceneManager.GetSceneByBuildIndex(1))
-        //{
-            //buttonlevel1Object = GameObject.FindGameObjectWithTag("button1");
-            //if (buttonlevel1Object)
-            //{
-                //button1 = buttonlevel1Object.GetComponent<Button>();
-                //button1.onClick.AddListener(QuitGame);
-            //}
+        if (scene == SceneManager.GetSceneByBuildIndex(1))
+        {
+            buttonlevel1Object = GameObject.FindGameObjectWithTag("QuitButton");
+            if (buttonlevel1Object)
+            {
+                button1 = buttonlevel1Object.GetComponent<Button>();
+                button1.onClick.AddListener(QuitGame);
+            }
 
 
-        //}
+        }
         
     }
 }
