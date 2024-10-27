@@ -32,23 +32,25 @@ public class UIManager : MonoBehaviour
     }
     public void QuitGame()
     {
-        UnityEditor.EditorApplication.isPlaying = false;
+        //UnityEditor.EditorApplication.isPlaying = false;
+        DontDestroyOnLoad(this.gameObject);
+        SceneManager.LoadScene(0);
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         
-        if (scene == SceneManager.GetSceneByBuildIndex(1))
-        {
-            buttonlevel1Object = GameObject.FindGameObjectWithTag("QuitButton");
-            if (buttonlevel1Object)
-            {
-                button1 = buttonlevel1Object.GetComponent<Button>();
-                button1.onClick.AddListener(QuitGame);
-            }
+        //if (scene == SceneManager.GetSceneByBuildIndex(1))
+        //
+            //buttonlevel1Object = GameObject.FindGameObjectWithTag("QuitButton");
+            //if (buttonlevel1Object)
+            //{
+                //button1 = buttonlevel1Object.GetComponent<Button>();
+                //button1.onClick.AddListener(QuitGame);
+            //}
 
 
-        }
+        //}
         
     }
 }
