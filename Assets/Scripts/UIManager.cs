@@ -8,6 +8,9 @@ public class UIManager : MonoBehaviour
 {
     private GameObject buttonlevel1Object;
     private Button button1;
+    private GameObject pacStudentGameObject;
+    private Animator pacStudentAnimator;
+    private Transform pacStudentTransform;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,17 +43,16 @@ public class UIManager : MonoBehaviour
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         
-        //if (scene == SceneManager.GetSceneByBuildIndex(1))
-        //
-            //buttonlevel1Object = GameObject.FindGameObjectWithTag("QuitButton");
-            //if (buttonlevel1Object)
+        if (scene == SceneManager.GetSceneByBuildIndex(1)){
+            //pacStudentGameObject = GameObject.FindGameObjectWithTag("PacStudent");
+            //if (pacStudentGameObject)
             //{
-                //button1 = buttonlevel1Object.GetComponent<Button>();
-                //button1.onClick.AddListener(QuitGame);
+                //pacStudentTransform = pacStudentGameObject.GetComponent<Transform>();
+                //pacStudentAnimator = pacStudentGameObject.GetComponent<Animator>();
             //}
 
 
-        //}
+        }
         
     }
 }

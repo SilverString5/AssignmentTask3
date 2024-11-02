@@ -6,6 +6,8 @@ TagManager:
   tags:
   - button1
   - QuitButton
+  - PacStudent
+  - Valid
   layers:
   - Default
   - TransparentFX
@@ -13,7 +15,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Wall
   - 
   - 
   - 
