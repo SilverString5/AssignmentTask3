@@ -275,7 +275,7 @@ public class PacStudentController : MonoBehaviour
 
     private bool IsPelletInDirection(Vector2 direction)
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 1f); // Short ray
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 2f); // Short ray
         if (hit.collider != null && hit.collider.CompareTag("Valid"))
         {
             Debug.Log("Pellet detected in direction: " + direction);
@@ -318,15 +318,30 @@ public class PacStudentController : MonoBehaviour
         
     }
     
-    /*
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (other.CompareTag("Valid"))
         {
             Destroy(other.gameObject);
             ScoreManager.Instance.AddScore(10);
+
+            pacStudentEatPelletAudio.Play();
+            pacStudentAudio.Pause();
+        }
+
+    }
+    
+    /*
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Valid"))
+        {
+            // Resume movement audio if PacStudent leaves the pellet collider
+            pacStudentAudio.Play();
+            pacStudentEatPelletAudio.Pause();
         }
     }
     */
+    
 
 }

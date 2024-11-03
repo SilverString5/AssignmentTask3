@@ -19,6 +19,7 @@ public class CherryController : MonoBehaviour
         RandomiseStartingPoint();
         transform.position = startingPoint;
         center = centerPosition;
+        Debug.Log("Cherry Initialized, starting LerpToPosition");
         LerpToPosition();
 
         StartCoroutine(ActivateDestructionCheck(1.5f));
@@ -60,13 +61,14 @@ public class CherryController : MonoBehaviour
        
         Vector3 direction = (center - startingPoint).normalized;
         targetPosition = new Vector3(center.x + direction.x * 50f, center.y + direction.y * 50f, startingPoint.z);
-
+        Debug.Log("Starting Lerp to Target Position: " + targetPosition);
         StartCoroutine(MoveCherry());
 
     }
     
     private IEnumerator MoveCherry()
     {
+        Debug.Log("Cherry is moving");
         float timeElapsed = 0f;
         float journeyLength = Vector3.Distance(startingPoint, targetPosition);
         float duration = journeyLength / moveSpeed;
@@ -98,7 +100,7 @@ public class CherryController : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    /*
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("PacStudent"))
@@ -107,6 +109,6 @@ public class CherryController : MonoBehaviour
             ScoreManager.Instance.AddScore(100);
         }
     }
-    */
+    
     
 }

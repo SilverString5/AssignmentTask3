@@ -23,7 +23,12 @@ public class CherryManager : MonoBehaviour
         CherryController cherryController = newCherry.GetComponent<CherryController>();
         if (cherryController != null)
         {
+            Debug.Log("Cherry instantiated and Initialize called.");
             cherryController.Initialize(canvasCentre.position);//This line here
+        }
+        else
+        {
+            Debug.LogError("CherryController component not found on new cherry instance.");
         }
         
     }
