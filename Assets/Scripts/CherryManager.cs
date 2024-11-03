@@ -13,17 +13,9 @@ public class CherryManager : MonoBehaviour
     
     void Start()
     {
-        StartCoroutine(SpawnCherryRoutine());
+        InvokeRepeating(nameof(SpawnCherry), 0f, spawnInterval);
     }
-
-    private IEnumerator SpawnCherryRoutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(spawnInterval);
-            SpawnCherry();
-        }
-    }
+    
 
     private void SpawnCherry()
     {

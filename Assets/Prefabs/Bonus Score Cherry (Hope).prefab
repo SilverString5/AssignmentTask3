@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7187301919752741207}
   - component: {fileID: 6156905825385428319}
   - component: {fileID: 4097899918617775070}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bonus Score Cherry (Hope)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

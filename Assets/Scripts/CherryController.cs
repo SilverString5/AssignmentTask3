@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CherryController : MonoBehaviour
 { 
@@ -10,6 +12,7 @@ public class CherryController : MonoBehaviour
     private Vector3 startingPoint;
     private Vector3 center;
     private float area1, area2;
+    private bool canBeDestroyed = false;
 
     public void Initialize(Vector3 centerPosition)
     {
@@ -17,16 +20,13 @@ public class CherryController : MonoBehaviour
         transform.position = startingPoint;
         center = centerPosition;
         LerpToPosition();
+
+        StartCoroutine(ActivateDestructionCheck(1.5f));
     }
     private void RandomiseStartingPoint() //will be called at each Invoke for SpawnCherry for 10 seconds.
     {
-        //area1 = Random.Range(Outside camera, outside camera view) -> x value
-        //area2 = Random.Range(Outside camera, outside camera view) -> y value
-        //should be random location JUST OUTSIDE of the camera view on any side of the level.
-        //Z will just be 0.
         
         Camera mainCamera = Camera.main;
-
         float camHeight = mainCamera.orthographicSize;
         float camWidth = camHeight * mainCamera.aspect;
 
@@ -51,7 +51,7 @@ public class CherryController : MonoBehaviour
                 break;
         }
 
-        startingPoint = new Vector3(area1, area2, 0);
+        startingPoint = new Vector3(area1, area2, -1);
 
     }
     
@@ -59,7 +59,7 @@ public class CherryController : MonoBehaviour
     {
        
         Vector3 direction = (center - startingPoint).normalized;
-        targetPosition = center + direction * 50f;
+        targetPosition = new Vector3(center.x + direction.x * 50f, center.y + direction.y * 50f, startingPoint.z);
 
         StartCoroutine(MoveCherry());
 
@@ -82,5 +82,20 @@ public class CherryController : MonoBehaviour
 
     }
 
+    private IEnumerator ActivateDestructionCheck(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        canBeDestroyed = true;
+    }
 
+    private void Update()
+    {
+        if (!canBeDestroyed) return;
+        Camera mainCamera = Camera.main;
+        Vector3 screenPoint = mainCamera.WorldToViewportPoint(transform.position);
+        if (screenPoint.x < -0.1f || screenPoint.x > 1.1f || screenPoint.y < -0.1f || screenPoint.y > 1.1f)
+        {
+            Destroy(gameObject);
+        }
+    }
 }
