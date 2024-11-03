@@ -15,18 +15,23 @@ public class UIManager : MonoBehaviour
     private Text hudScoreText;
     private GameObject hudTimerObject;
     private Text hudTimertext;
+    //public static UIManager Instance;
     
-    // Start is called before the first frame update
-    void Start()
+    /*
+    private void Awake()
     {
-        
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    */
+    
 
     public void LoadFirstLevel()
     {
@@ -34,28 +39,39 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
         SceneManager.LoadScene(1);
         SceneManager.sceneLoaded += OnSceneLoaded;
-        //ShowLoadingScreen();
-        //StartCoroutine(LoadSceneAsync(1));
+       
         
     }
     public void QuitGame()
     {
-        //UnityEditor.EditorApplication.isPlaying = false;
         DontDestroyOnLoad(this.gameObject);
         SceneManager.LoadScene(0);
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        
+        /*
         if (scene == SceneManager.GetSceneByBuildIndex(1)){
             hudScoreObject = GameObject.Find("Score");
             if (hudScoreObject)
             {
                 hudScoreText = pacStudentGameObject.GetComponent<Text>();
+                UpdateScoreUI(ScoreManager.Instance.GetScore());
+                
             }
             
         }
+        */
         
     }
+    
+    /*
+    public void UpdateScoreUI(int newScore)
+    {
+        if (hudScoreText != null)
+        {
+            hudScoreText.text = "Score: " + newScore;
+        }
+    }
+    */
 }

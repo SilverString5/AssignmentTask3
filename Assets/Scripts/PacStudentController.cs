@@ -316,7 +316,17 @@ public class PacStudentController : MonoBehaviour
             hasTeleported = false;
         }
         
-        
     }
+    
+    /*
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Valid"))
+        {
+            Destroy(other.gameObject);
+            ScoreManager.Instance.AddScore(10);
+        }
+    }
+    */
 
 }

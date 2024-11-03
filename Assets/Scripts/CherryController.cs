@@ -98,4 +98,15 @@ public class CherryController : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    /*
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("PacStudent"))
+        {
+            Destroy(gameObject);
+            ScoreManager.Instance.AddScore(100);
+        }
+    }
+    */
+    
 }
