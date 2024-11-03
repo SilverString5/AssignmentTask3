@@ -11,6 +11,11 @@ public class UIManager : MonoBehaviour
     private GameObject pacStudentGameObject;
     private Animator pacStudentAnimator;
     private Transform pacStudentTransform;
+    private GameObject hudScoreObject;
+    private Text hudScoreText;
+    private GameObject hudTimerObject;
+    private Text hudTimertext;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -44,14 +49,12 @@ public class UIManager : MonoBehaviour
     {
         
         if (scene == SceneManager.GetSceneByBuildIndex(1)){
-            //pacStudentGameObject = GameObject.FindGameObjectWithTag("PacStudent");
-            //if (pacStudentGameObject)
-            //{
-                //pacStudentTransform = pacStudentGameObject.GetComponent<Transform>();
-                //pacStudentAnimator = pacStudentGameObject.GetComponent<Animator>();
-            //}
-
-
+            hudScoreObject = GameObject.Find("Score");
+            if (hudScoreObject)
+            {
+                hudScoreText = pacStudentGameObject.GetComponent<Text>();
+            }
+            
         }
         
     }

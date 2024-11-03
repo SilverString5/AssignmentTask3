@@ -9,7 +9,6 @@ public class Tweener : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("THis ran brahj");
         activeTweens = new List<Tween>();
 
     }
@@ -73,4 +72,10 @@ public class Tweener : MonoBehaviour
         }
         return false;
     }
+
+    public void ClearTween(Transform target)
+    {
+        activeTweens.RemoveAll(tween => tween.Target == target);
+    }
+    
 }

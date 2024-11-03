@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
@@ -18,9 +20,20 @@ public class PacStudentController : MonoBehaviour
     [SerializeField] private LayerMask wallLayerMask;
     public AudioSource pacStudentAudio;
     public AudioSource pacStudentEatPelletAudio;
+    public AudioSource pacStudentCollisionSound;
+    public GameObject collisionParticlesPrefab;
     private string playerInput, lastInput, currentInput = null;
     private int spriteState;
     private Vector3 upState, downState, leftState, rightState;
+    private bool hasCollided = false;
+    private bool isFirstStop = true;
+
+    private float teleportLeftX = -5f;
+    private float teleportRightX = 21f;
+    private float tunnelMinY = -6.5f;
+    private float tunnelMaxY = -3.5f;
+
+    private bool hasTeleported = false;
     
     
     
@@ -37,6 +50,7 @@ public class PacStudentController : MonoBehaviour
         checkPlayerInput();
         updateLastInput();
         updateCurrentInput();
+        PortalFunctionality();
         
         
     }
@@ -104,6 +118,8 @@ public class PacStudentController : MonoBehaviour
 
     private void MoveDirection()
     {
+        
+        hasCollided = false;
         Vector3 endPosition = transform.position;
         string animationName = "";
         Vector2 direction = Vector2.zero;
@@ -197,6 +213,22 @@ public class PacStudentController : MonoBehaviour
         {
             pacStudentEatPelletAudio.Pause();
         }
+
+        if (isFirstStop)
+        {
+            isFirstStop = false;
+            return;
+        }
+
+        if (!hasCollided)
+        {
+            hasCollided = true;
+            pacStudentCollisionSound.Play();
+
+            GameObject particles = Instantiate(collisionParticlesPrefab, transform.position, Quaternion.identity);
+            Destroy(particles, 0.5f);
+        }
+        
         
     }
     
@@ -252,5 +284,39 @@ public class PacStudentController : MonoBehaviour
 
         return false;
     }
-    
+
+    private void PortalFunctionality()
+    {
+        if (transform.position.y >= tunnelMinY && transform.position.y <= tunnelMaxY && !hasTeleported)
+        {
+            if (transform.position.x > teleportRightX)
+            {
+                if (tweener != null && tweener.TweenExists(transform))
+                {
+                    tweener.ClearTween(transform);
+                }
+                transform.position = new Vector3(teleportLeftX, transform.position.y, transform.position.z);
+                Debug.Log("Teleported from right to left!");
+                hasTeleported = true;
+            }
+            else if (transform.position.x < teleportLeftX)
+            {
+                if (tweener != null && tweener.TweenExists(transform))
+                {
+                    tweener.ClearTween(transform);
+                }
+                transform.position = new Vector3(teleportRightX, transform.position.y, transform.position.z);
+                Debug.Log("Teleported from left to right!");
+                hasTeleported = true;
+            }
+        }
+
+        if (transform.position.x > teleportLeftX && transform.position.x < teleportRightX)
+        {
+            hasTeleported = false;
+        }
+        
+        
+    }
+
 }
