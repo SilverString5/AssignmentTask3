@@ -2019,6 +2019,8 @@ GameObject:
   m_Component:
   - component: {fileID: 105530958}
   - component: {fileID: 105530957}
+  - component: {fileID: 105530959}
+  - component: {fileID: 105530960}
   m_Layer: 0
   m_Name: OtherManager
   m_TagString: Untagged
@@ -2053,6 +2055,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &105530959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105530956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b547e306c925b894e81850d1d339ea26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cherryPrefab: {fileID: 4575327220013139685, guid: 8a5eb8f5b29ac9d4eb5c7b2cd083f9d0, type: 3}
+  spawnInterval: 10
+  canvasCentre: {fileID: 1141955978}
+--- !u!114 &105530960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105530956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c775c898858344498648ff7869c55dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
 --- !u!1001 &107872203
 PrefabInstance:
   m_ObjectHideFlags: 0
