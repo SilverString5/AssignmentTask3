@@ -19,7 +19,7 @@ public class PacStudentController : MonoBehaviour
     private Tweener tweener;
     [SerializeField] private Animator pacStudentAnimator;
     [SerializeField] private LayerMask wallLayerMask;
-    public AudioSource pacStudentAudio, pacStudentEatPelletAudio, pacStudentCollisionSound;
+    public AudioSource pacStudentAudio, pacStudentEatPelletAudio, pacStudentCollisionSound, ghostsScaredAudio;
     public GameObject collisionParticlesPrefab;
     private string playerInput, lastInput, currentInput = null;
     private int spriteState;
@@ -47,6 +47,9 @@ public class PacStudentController : MonoBehaviour
 
     public bool NotInPortalXPosition =>
         transform.position.x > teleportLeftX && transform.position.x < teleportRightX;
+
+    public GhostController[] ghosts;
+    
     
     
     // Start is called before the first frame update
@@ -266,7 +269,6 @@ public class PacStudentController : MonoBehaviour
     private bool IsPelletInDirection(Vector2 direction)
     {
         Vector2 rayOrigin = (Vector2)transform.position + direction * 1f;
-        Debug.DrawRay(transform.position, direction * 2f, Color.red, 0.1f);
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, direction, 1f); // Short ray
         
         if (hit.collider != null)
@@ -274,16 +276,16 @@ public class PacStudentController : MonoBehaviour
             Debug.Log($"Raycast hit: {hit.collider.name} with tag {hit.collider.tag}");
             if (hit.collider.CompareTag("Valid"))
             {
-                Debug.Log("Pellet detected.");
+                //Debug.Log("Pellet detected.");
                 return true;
             }
             else
             {
-                Debug.Log("Hit non-pellet object");
+                //Debug.Log("Hit non-pellet object");
             }
             
         }
-        Debug.Log("No pellet detected.");
+        //Debug.Log("No pellet detected.");
         return false;
     }
 
@@ -324,12 +326,59 @@ public class PacStudentController : MonoBehaviour
     {
         if (other.CompareTag("Valid"))
         {
-            Destroy(other.gameObject);
-            ScoreManager.Instance.AddScore(10);
+            PowerPellet powerPellet = other.GetComponent<PowerPellet>();
+            if (powerPellet != null)
+            {
+                Destroy(other.gameObject);
+                TriggerGhostScaredState();
+                
+            }
+            else
+            {
+                Destroy(other.gameObject);
+                ScoreManager.Instance.AddScore(10);
+            }
+            
+            
             
         }
 
     }
+
+    private void TriggerGhostScaredState()
+    {
+        foreach (var ghost in ghosts)
+        {
+            ghost.PlayScaredAnimation();
+        }
+
+        BackgroundMusicManager musicManager = FindObjectOfType<BackgroundMusicManager>();
+        if (musicManager != null)
+        {
+            musicManager.PlayGhostScaredMusic(10f);
+        }
+
+        StartCoroutine(TriggerGhostTransformState(7f));
+        StartCoroutine(ResetGhostScaredState(10f));
+    }
+
+    private IEnumerator TriggerGhostTransformState(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        foreach (var ghost in ghosts)
+        {
+            ghost.PlayScaredTransformAnimation();
+        }
+    }
+    private IEnumerator ResetGhostScaredState(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        foreach (var ghost in ghosts)
+        {
+            ghost.PlayNormalAnimation();
+        }
+    }
+    
     private void PlayAudio(bool isEatingPellet)
     {
         if (isEatingPellet)

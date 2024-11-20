@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1650167346939896332}
   - component: {fileID: 176502047069338431}
   - component: {fileID: 3984396469589075782}
+  - component: {fileID: 5482914069437325544}
   m_Layer: 0
   m_Name: Power Pellet
   m_TagString: Valid
@@ -184,3 +185,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &5482914069437325544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5978911299948126210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 658f59add5f93b5498a9a4ce2ca533aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
