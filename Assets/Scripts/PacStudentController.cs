@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using Unity.VisualScripting;
@@ -18,9 +19,7 @@ public class PacStudentController : MonoBehaviour
     private Tweener tweener;
     [SerializeField] private Animator pacStudentAnimator;
     [SerializeField] private LayerMask wallLayerMask;
-    public AudioSource pacStudentAudio;
-    public AudioSource pacStudentEatPelletAudio;
-    public AudioSource pacStudentCollisionSound;
+    public AudioSource pacStudentAudio, pacStudentEatPelletAudio, pacStudentCollisionSound;
     public GameObject collisionParticlesPrefab;
     private string playerInput, lastInput, currentInput = null;
     private int spriteState;
@@ -34,12 +33,33 @@ public class PacStudentController : MonoBehaviour
     private float tunnelMaxY = -3.5f;
 
     private bool hasTeleported = false;
-    
+    private Dictionary<KeyCode, string> inputMappings;
+    public bool lastInputValidandNotEqualToCurrentInput => checkInputValidity(lastInput) && currentInput != lastInput;
+    public bool currentInputValid => checkInputValidity(currentInput);
+    public bool currentAndLastInputNotNull => currentInput != null || lastInput != null;
+    public bool wallIsUp => IsWallInDirection(Vector2.up);
+    public bool wallIsLeft => IsWallInDirection(Vector2.left);
+    public bool wallIsRight => IsWallInDirection(Vector2.right);
+    public bool wallIsDown => IsWallInDirection(Vector2.down);
+
+    public bool PacStudentIsWithinPortalYCoordinates =>
+        transform.position.y >= tunnelMinY && transform.position.y <= tunnelMaxY;
+
+    public bool NotInPortalXPosition =>
+        transform.position.x > teleportLeftX && transform.position.x < teleportRightX;
     
     
     // Start is called before the first frame update
     void Start()
     {
+        inputMappings = new Dictionary<KeyCode, string>
+        {
+            { KeyCode.W, "w" },
+            { KeyCode.S, "s" },
+            { KeyCode.D, "d" },
+            { KeyCode.A, "a" },
+
+        };
         tweener = GetComponent<Tweener>();
         StopMovement();
     }
@@ -59,49 +79,35 @@ public class PacStudentController : MonoBehaviour
 
     private void checkPlayerInput()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        playerInput = null;
+
+        foreach (var mapping in inputMappings)
         {
-            playerInput = "w";
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            playerInput = "s";
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            playerInput = "d";
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            playerInput = "a";
-        }
-        else
-        {
-            playerInput = null;
+            if (Input.GetKeyDown(mapping.Key))
+            {
+                playerInput = mapping.Value;
+                break;
+            }
         }
     }
     
     private void updateLastInput()
     {
         if (playerInput != lastInput && playerInput != null)
-        {
             lastInput = playerInput; //changed playerInput overrides last input.
-        }
+        
     }
     
-    //add valid tag (invalid tag OR valid tag) if valid tag (if lastInput is valid), then change the currentInput then lerp to grid position
-    //check adjacent tiles (what game objects are within 1 unit) //if the game object is within 1 unit
     private void updateCurrentInput()
     {
         
-        
-        if (checkInputValidity(lastInput) && currentInput != lastInput)
+        if (lastInputValidandNotEqualToCurrentInput)
         {
             currentInput = lastInput;
             MoveDirection();
             lastInput = null;
         }
-        else if (checkInputValidity(currentInput))
+        else if (currentInputValid)
         {
             if (!tweener.TweenExists(transform))
             {
@@ -124,7 +130,7 @@ public class PacStudentController : MonoBehaviour
         string animationName = "";
         Vector2 direction = Vector2.zero;
         
-        if (currentInput != null || lastInput != null)
+        if (currentAndLastInputNotNull)
         {
             if (currentInput == "w")
             {
@@ -162,22 +168,7 @@ public class PacStudentController : MonoBehaviour
 
                 pacStudentAnimator.speed = 1;
 
-                if (IsPelletInDirection(direction))
-                {
-                    if (!pacStudentEatPelletAudio.isPlaying)
-                    {
-                        pacStudentAudio.Pause();
-                        pacStudentEatPelletAudio.Play();
-                    }
-                }
-                else
-                {
-                    if (!pacStudentAudio.isPlaying)
-                    {
-                        pacStudentEatPelletAudio.Pause();
-                        pacStudentAudio.Play();
-                    }
-                }
+                PlayAudio(IsPelletInDirection(direction));// <- using this to check what current audio is playing.
 
                 if (!string.IsNullOrEmpty(animationName))
                 {
@@ -237,7 +228,7 @@ public class PacStudentController : MonoBehaviour
         
         if (value == "w")
         {
-            if (IsWallInDirection(Vector2.up))
+            if (wallIsUp)
             { 
                 return false;
             }
@@ -245,17 +236,16 @@ public class PacStudentController : MonoBehaviour
         }
         if (value == "a")
         {
-            if (IsWallInDirection(Vector2.left))
+            if (wallIsLeft)
             {
                 return false;
             }
             return true;
-            
         }
         
         if (value == "s")
         {
-            if (IsWallInDirection(Vector2.down))
+            if (wallIsDown)
             {
                 return false;
             }
@@ -264,7 +254,7 @@ public class PacStudentController : MonoBehaviour
         
         if (value == "d")
         {
-            if (IsWallInDirection(Vector2.right))
+            if (wallIsRight)
             {
                 return false;
             }
@@ -275,19 +265,31 @@ public class PacStudentController : MonoBehaviour
 
     private bool IsPelletInDirection(Vector2 direction)
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 2f); // Short ray
-        if (hit.collider != null && hit.collider.CompareTag("Valid"))
+        Vector2 rayOrigin = (Vector2)transform.position + direction * 1f;
+        Debug.DrawRay(transform.position, direction * 2f, Color.red, 0.1f);
+        RaycastHit2D hit = Physics2D.Raycast(rayOrigin, direction, 1f); // Short ray
+        
+        if (hit.collider != null)
         {
-            Debug.Log("Pellet detected in direction: " + direction);
-            return true;
+            Debug.Log($"Raycast hit: {hit.collider.name} with tag {hit.collider.tag}");
+            if (hit.collider.CompareTag("Valid"))
+            {
+                Debug.Log("Pellet detected.");
+                return true;
+            }
+            else
+            {
+                Debug.Log("Hit non-pellet object");
+            }
+            
         }
-
+        Debug.Log("No pellet detected.");
         return false;
     }
 
     private void PortalFunctionality()
     {
-        if (transform.position.y >= tunnelMinY && transform.position.y <= tunnelMaxY && !hasTeleported)
+        if (PacStudentIsWithinPortalYCoordinates && !hasTeleported)
         {
             if (transform.position.x > teleportRightX)
             {
@@ -311,7 +313,7 @@ public class PacStudentController : MonoBehaviour
             }
         }
 
-        if (transform.position.x > teleportLeftX && transform.position.x < teleportRightX)
+        if (NotInPortalXPosition)
         {
             hasTeleported = false;
         }
@@ -324,24 +326,31 @@ public class PacStudentController : MonoBehaviour
         {
             Destroy(other.gameObject);
             ScoreManager.Instance.AddScore(10);
-
-            pacStudentEatPelletAudio.Play();
-            pacStudentAudio.Pause();
+            
         }
 
+    }
+    private void PlayAudio(bool isEatingPellet)
+    {
+        if (isEatingPellet)
+        {
+            if (!pacStudentEatPelletAudio.isPlaying)
+            {
+                pacStudentAudio.Pause();
+                pacStudentEatPelletAudio.Play();
+            }
+        }
+        else
+        {
+            if (!pacStudentAudio.isPlaying)
+            {
+                pacStudentEatPelletAudio.Pause();
+                pacStudentAudio.Play();
+            }
+        }
     }
     
-    /*
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Valid"))
-        {
-            // Resume movement audio if PacStudent leaves the pellet collider
-            pacStudentAudio.Play();
-            pacStudentEatPelletAudio.Pause();
-        }
-    }
-    */
+    
     
 
 }
